@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="agendasClassroomPopup">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/lib/angular-material.min.css" />
+    <script src="/lib/angular.min.js"></script>
+    <script src="/lib/angular-aria.min.js"></script>
+    <script src="/lib/angular-animate.min.js"></script>
+    <script src="/lib/angular-messages.min.js"></script>
+    <script src="/lib/angular-material.min.js"></script>
+
+    <link rel="stylesheet" href="/material-icons.css" />
+    <script src="popup.js"></script>
+
+    <style>
+    body {
+      width: 300px;
+      font-family: system-ui;
+      font-size: 16px;
+      background-color: white;
+    }
+    </style>
+  </head>
+  <body ng-controller="AgendasClassroomPopupController">
+    <md-toolbar class="md-primary">
+      <div class="md-toolbar-tools">
+        <h1 class="md-title">Agendas for Classroom</h1>
+      </div>
+    </md-toolbar>
+    <md-list>
+      <md-list-item ng-if="signedIn" class="md-2-line" ng-click="signOut()">
+        <md-icon>exit_to_app</md-icon>
+        <div class="md-list-item-text">
+          <h3>Sign out</h3>
+          <p>{{email}}</p>
+        </div>
+      </md-list-item>
+      <md-list-item ng-click="signIn()" ng-if="signedOut">
+        <md-icon>person</md-icon>
+        <p>Sign in</p>
+      </md-list-item>
+      <md-list-item ng-if="offline">
+        <p>You're offline.</p>
+      </md-list-item>
+      <md-list-item ng-if="!(signedIn || signedOut || offline)" style="padding: 1em;">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </md-list-item>
+      <md-list-item ng-click="openAgendas()">
+        <md-icon>launch</md-icon>
+        <p>Open Agendas</p>
+      </md-list-item>
+    </md-list>
+  </body>
+</html>
