@@ -1,0 +1,12 @@
+{
+  "name": "Agendas for Classroom",
+  "manifest_version": 2,
+  "version": "0",
+  "content_scripts": [
+    {
+      "matches": ["*://classroom.google.com/*"],
+      "css": ["agendas-classroom.css"],
+      "js": ["agendas-classroom.js"]
+    }
+  ]
+}
