@@ -12,10 +12,23 @@ window.addEventListener("load", function() {
         result ? resolve(result.agendasClassroomState) : reject(runtime.lastError);
       });
     }).then(function(storedState) {
+      chrome.storage.local.remove("agendasClassroomState");
       if (parseFloat(state) === storedState && token) {
-        chrome.storage.local.set({agendasClassroomToken: token});
-        chrome.storage.local.remove("agendasClassroomState");
-        window.close();
+        fetch("https://api.agendas.co/api/v1/email", {
+          method: "GET",
+          headers: {Authorization: "Bearer " + token}
+        }).then(function(response) {
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            throw new Error("Auth error");
+          }
+        }).then(function(json) {
+          if (json.email) {
+            chrome.storage.local.set({agendasClassroomToken: token, agendasClassroomEmail: json.email});
+            window.close();
+          }
+        });
       }
     }).catch(function(e) {
       console.log(e);

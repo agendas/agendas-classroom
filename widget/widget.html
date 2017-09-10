@@ -3,26 +3,95 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/lib/angular-material.min.css" />
+    <link rel="stylesheet" href="/material-icons.css" />
     <script src="/lib/angular.min.js"></script>
     <script src="/lib/angular-aria.min.js"></script>
     <script src="/lib/angular-animate.min.js"></script>
     <script src="/lib/angular-messages.min.js"></script>
     <script src="/lib/angular-material.min.js"></script>
+    <script src="/lib/chrono.min.js"></script>
 
     <style>
-    body {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, input, textarea {
       font-family: system-ui;
+    }
+
+    body {
+      height: 400px;
+      background-color: white;
+      font-size: 16px;
+    }
+
+    .add-task {
+      padding: 8px;
+      padding-top: 16px;
+    }
+
+    .save-button-container {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+    }
+
+    md-input-container .md-errors-spacer {
+      display: none;
     }
     </style>
 
-    <script>
-    angular.module("agendasClassroom", ["ngMaterial"])
-      .controller("AgendasClassroomController", function($scope) {
-
-      })
-    </script>
+    <script src="widget.js"></script>
+    <script src="timepicker.js"></script>
   </head>
   <body ng-controller="AgendasClassroomController">
-    <p>Hello!</p>
+    <md-toolbar class="md-primary">
+      <div class="md-toolbar-tools">
+        <h1 class="md-title">Add to Agendas</h1>
+      </div>
+    </md-toolbar>
+    <div layout="column" layout-align="center center" layout-margin ng-if="done || !signedIn">
+      <md-progress-circular md-mode="indeterminate" ng-if="!(offline || signedOut || done)"></md-progress-circular>
+      <p ng-if="!(offline || signedOut || done)">Loading, please wait...</p>
+      <p ng-if="offline">You're offline.</p>
+      <p class="md-headline" ng-if="signedOut">Please sign in</p>
+      <md-button class="md-raised md-accent" ng-if="signedOut" ng-click="signIn()">Sign in</md-button>
+      <p class="md-headline" ng-if="done">All done.</p>
+      <md-button class="md-accent" ng-if="done" ng-click="openAgenda(agenda.id)">View agenda</md-button>
+    </div>
+    <div ng-show="signedIn && !done" class="add-task">
+      <md-input-container class="md-block">
+        <label>Name</label>
+        <input type="text" ng-model="name" />
+      </md-input-container>
+      <div layout="row" layout-align="start center">
+        <label for="datepicker" flex="20">Date:</label>
+        <md-datepicker ng-model="deadline" id="datepicker" flex></md-datepicker>
+      </div>
+      <div class="time-picker-container" layout="row" layout-align="start center">
+        <label for="timepicker" flex="20">Time:</label>
+        <time-picker ng-model="time" id="timepicker" flex></time-picker>
+      </div>
+      <md-input-container ng-show="agenda" class="md-block" style="margin-top: 0;">
+        <label>Tag</label>
+        <md-select ng-model="tag" md-on-open="loadTags()">
+          <md-option ng-value="">None</md-option>
+          <md-option ng-repeat="theTag in tags track by theTag.id" ng-value="(defaultTag.id === theTag.id) ? defaultTag : theTag">{{theTag.name}}</md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Agenda</label>
+        <md-select ng-model="agenda" md-on-open="loadAgendas()" ng-change="changeAgendas(agenda)">
+          <md-option ng-repeat="theAgenda in agendas track by theAgenda.id" ng-value="(defaultAgenda.id === theAgenda.id) ? defaultAgenda : theAgenda">{{theAgenda.name}}</md-option>
+        </md-select>
+      </md-input-container>
+      <div layout="row" class="save-button-container">
+        <span flex></span>
+        <md-button class="md-raised md-accent" ng-click="save()" ng-disabled="saving || !agenda">Save</md-button>
+      </div>
+    </div>
   </body>
 </html>

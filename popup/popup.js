@@ -1,8 +1,9 @@
 angular.module("agendasClassroomPopup", ["ngMaterial"])
   .config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
-      .primaryPalette('green')
-      .accentPalette('amber');
+      .primaryPalette('amber')
+      .accentPalette('green')
+      .warnPalette('red')
   })
   .controller("AgendasClassroomPopupController", function($scope, $http) {
     $scope.openAgendas = function() {
@@ -17,6 +18,7 @@ angular.module("agendasClassroomPopup", ["ngMaterial"])
 
     $scope.signOut = function() {
       chrome.storage.local.remove("agendasClassroomToken");
+      chrome.storage.local.remove("agendasClassroomEmail");
       $scope.signedIn = false;
       $scope.signedOut = true;
     };
